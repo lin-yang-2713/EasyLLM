@@ -7,7 +7,6 @@
 from functools import partial
 from transformers import AutoTokenizer,LlamaTokenizer
 from concurrent.futures import ThreadPoolExecutor,ProcessPoolExecutor
-from easyllm.data.utils import qa_inputs_generator
 import pyarrow.parquet
 import numpy as np
 import argparse
@@ -72,6 +71,7 @@ def qa_generator(file):
             line = f.readline()
 
 def token_qa(file,tokenizer,MAX_SEQ_LENGTH,ROLE = {},PREFIX = []):
+    from easyllm.data.utils import qa_inputs_generator
     for sample in qa_generator(file):
         inp_anses = sample.strip().split("\t") # example data format: Input\tAnswer, modify by your will.
         if len(inp_anses) > 1:
