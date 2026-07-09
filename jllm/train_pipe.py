@@ -431,6 +431,10 @@ if args.max_num_checkpoints<0:args.best_of=1
 if args.only_ckpt_lora:args.only_ckpt_model = True
 args.device = deepspeed.get_accelerator().device_name()
 if args.device == 'npu':
+    try:
+        from .model.qwen3_5.flash_gated_delta_rule import flash_gated_delta_rule
+    except:
+        print("flash linear attention isn't supported!")
     import torch_npu
     from torch_npu.contrib import transfer_to_npu
     def get_args():
@@ -654,7 +658,7 @@ def main(args):
         'train_batch_size'] = args.global_batch_size//args.sequence_parallel_size
     ds_config['steps_per_print'] = args.steps_per_print
 
-    if args.tensor_parallel_size>=1 or args.expert_parallel_size>1 or args.moe_layer_pipe_size>2 \
+    if args.tensor_parallel_size>1 or args.expert_parallel_size>1 or args.moe_layer_pipe_size>2 \
         or config.model_type == 'qwen3_vl' :
         if args.device == 'npu':
             import jllm.ascend
