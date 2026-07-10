@@ -282,29 +282,29 @@ def solve_tri_auto(
     chunk_indices_list: Optional[list[int] | torch.Tensor],
     output_dtype: torch.dtype,
 ) -> torch.Tensor:
-    global _SOLVE_TRI_ASCENDC_AVAILABLE, _SOLVE_TRI_ASCENDC_UNAVAILABLE_REASON
+    # global _SOLVE_TRI_ASCENDC_AVAILABLE, _SOLVE_TRI_ASCENDC_UNAVAILABLE_REASON
 
-    if _probe_solve_tri_ascendc(A.device, output_dtype):
-        try:
-            return solve_tri_ascendc(
-                A,
-                cu_seqlens=cu_seqlens_list,
-                chunk_indices=chunk_indices_list,
-                output_dtype=output_dtype,
-            )
-        except Exception as exc:
-            _SOLVE_TRI_ASCENDC_AVAILABLE = False
-            _SOLVE_TRI_ASCENDC_UNAVAILABLE_REASON = str(exc).splitlines()[0]
-            try:
-                torch.npu.synchronize()
-            except Exception:
-                pass
+    # if _probe_solve_tri_ascendc(A.device, output_dtype):
+        # try:
+            # return solve_tri_ascendc(
+                # A,
+                # cu_seqlens=cu_seqlens_list,
+                # chunk_indices=chunk_indices_list,
+                # output_dtype=output_dtype,
+            # )
+        # except Exception as exc:
+            # _SOLVE_TRI_ASCENDC_AVAILABLE = False
+            # _SOLVE_TRI_ASCENDC_UNAVAILABLE_REASON = str(exc).splitlines()[0]
+            # try:
+                # torch.npu.synchronize()
+            # except Exception:
+                # pass
 
-    warnings.warn(
-        "AscendC npu_solve_tri is unavailable; falling back to Triton solve_tril_npu. "
-        f"Reason: {_SOLVE_TRI_ASCENDC_UNAVAILABLE_REASON}",
-        RuntimeWarning,
-    )
+    # warnings.warn(
+        # "AscendC npu_solve_tri is unavailable; falling back to Triton solve_tril_npu. "
+        # f"Reason: {_SOLVE_TRI_ASCENDC_UNAVAILABLE_REASON}",
+        # RuntimeWarning,
+    # )
     return solve_tril(
         A=A,
         cu_seqlens=cu_seqlens,
