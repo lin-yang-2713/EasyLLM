@@ -413,14 +413,6 @@ parser.add_argument("--beta",
                     type=float,
                     default=0.02,
                     help="beta")
-parser.add_argument('--cache_prefill',
-                    action='store_true',
-                    help='Cache prefill during reinforcement learning.')
-# parser.add_argument("--sleep_time_to_send",
-                    # type=int,
-                    # default=0,
-                    # help="Sleep time to send request.")
-                    
                     
 parser = deepspeed.add_config_arguments(parser)
 args=parser.parse_args()
@@ -431,11 +423,11 @@ if args.max_num_checkpoints<0:args.best_of=1
 if args.only_ckpt_lora:args.only_ckpt_model = True
 args.device = deepspeed.get_accelerator().device_name()
 if args.device == 'npu':
+    import torch_npu
     try:
         from .model.qwen3_5.flash_gated_delta_rule import flash_gated_delta_rule
     except:
         print("flash linear attention isn't supported!")
-    import torch_npu
     from torch_npu.contrib import transfer_to_npu
     def get_args():
         return args
@@ -635,7 +627,6 @@ def main(args):
         config.epsilon_low = args.epsilon_low
         config.epsilon_high = args.epsilon_high
         config.beta = args.beta
-        config.cache_prefill=args.cache_prefill
         from jllm import rlhf
         from vllm.utils import get_ip
         args.ray_ip = get_ip() if args.ray_ip is None else args.ray_ip

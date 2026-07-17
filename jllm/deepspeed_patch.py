@@ -123,7 +123,7 @@ if args.rlhf:
 
         self.clear_hp_grads()
     bf16_optimizer.BF16_Optimizer.step = step
-    
+    '''
     if args.cache_prefill:
         counter = -1
         group_step =args.num_generations//args.sequence_parallel_size//args.micro_batch_size
@@ -244,7 +244,7 @@ if args.rlhf:
             
         from deepspeed.runtime.pipe import engine 
         engine.PipelineEngine._INSTRUCTION_MAP[schedule.BackwardPass] = _exec_backward_pass
-
+    '''
 
 if args.expert_parallel_size>1:
     from deepspeed.moe import layer
