@@ -628,7 +628,7 @@ def main(args):
         config.epsilon_high = args.epsilon_high
         config.beta = args.beta
         from jllm import rlhf
-        from vllm.utils import get_ip
+        from vllm.utils.network_utils import get_ip
         args.ray_ip = get_ip() if args.ray_ip is None else args.ray_ip
         dp_rank = topo.get_coord(rank=args.global_rank).data
         if args.num_vllm_engines>args.data_parallel_size:

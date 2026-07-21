@@ -27,7 +27,10 @@ class WorkerExtension:
         self.tp_rank = mpu.get_tensor_model_parallel_rank()
         self.pp_size = mpu.get_pp_group().world_size
         self.pp_rank = mpu.get_pp_group().rank_in_group
-        self.ep_rank = mpu.get_ep_group().rank_in_group
+        try:
+            self.ep_rank = mpu.get_ep_group().rank_in_group
+        except Exception:
+            self.ep_rank = 0
         self.model_update_groups={}
         return self.device_uuid
         
@@ -301,7 +304,7 @@ if __name__=='__main__':
                         
     args=parser.parse_args()
     args.model=os.path.abspath(args.model)
-    from vllm.utils import get_ip
+    from vllm.utils.network_utils import get_ip
     ray_ip = get_ip() if args.ray_ip is None else args.ray_ip
     # try:
     actor_pool=init_vllm(f"{ray_ip}:{args.ray_port}",
