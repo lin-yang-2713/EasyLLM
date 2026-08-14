@@ -16,7 +16,7 @@ if __name__=='__main__'	:
     ip_path = os.path.join(args.obs_path ,'rank_ip',args.hash_file,'ip.txt')
     local_file='/tmp/ip.txt'
     if node_rank == infer_start:
-        from vllm.utils import get_ip
+        from vllm.utils.network_utils import get_ip
         ip = get_ip()
         with open(local_file, 'w') as f:
             f.write(ip)

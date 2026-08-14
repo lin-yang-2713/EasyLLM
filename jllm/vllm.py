@@ -30,7 +30,7 @@ class WorkerExtension:
         try:
             self.ep_rank = mpu.get_ep_group().rank_in_group
         except Exception:
-            self.ep_rank = 0
+            self.ep_rank = self.tp_rank
         self.model_update_groups={}
         return self.device_uuid
         
